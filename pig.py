@@ -122,21 +122,34 @@ Holding scores the sum of rolls for that round. If a 1 is rolled, no points are 
         dice = Dice(6)
         p1_score = 0
         p2_score = 0
-        timeLimit = 60
+        timeLimit = 10
         print(f"***{self.name}***".center(93))
         print(f"{self.rules}\n")
-        while (timeLimit - time.time()) < 0:
-            while p1_score < 100 and p2_score < 100:
-                p1_score += int(self.turns(player1, p1_score, dice))
+        startTime = time.time()
+        while p1_score < 100 and p2_score < 100:
+            if self.getTime(startTime) < timeLimit:
+                p1_score += self.turns(player1, p1_score, dice)
                 print(f"Your total score is {p1_score}.\n")
                 if p1_score >= 100:
                     break
+            else:
+                print("Time's up!")
+                break
+            if self.getTime(startTime) < timeLimit:
                 p2_score += self.turns(player2, p2_score, dice)
                 print(f"Your total score is {p2_score}.\n")
+            else:
+                print("Time's up!")
+                break
         if p1_score > p2_score:
             print(f"Congratulations {player1.name}! You've won!")
         else:
             print(f"Congratulations {player2.name}! You've won!")
+
+    def getTime(self, startTime):
+        currentTime = time.time()
+        return currentTime - startTime
+
 
 def main(args):
     '''This is the main function. It instantiates either a classic or timed game based on parameters'''
